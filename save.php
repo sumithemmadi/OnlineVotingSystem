@@ -2,9 +2,9 @@
 ini_set('display_errors', 'On');
 error_reporting(E_ALL);
 require('connection.php');
- $vote = $_REQUEST['vote'];
-  $user_id=$_REQUEST['user_id'];
-   $position=$_REQUEST['position'];
+$vote = $_REQUEST['vote'];
+$user_id=$_REQUEST['user_id'];
+$position=$_REQUEST['position'];
 
 $sql=mysqli_query($con, "SELECT position,voter_id FROM tblvotes where position='$position' and voter_id='$user_id'");
 

@@ -3,10 +3,10 @@
 $showAlert = false;
 $showError = false;
 $exists = false;
+session_start();
+include("dbconnect.php");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    include 'dbconnect.php';
-
     $firstname = $_POST["first_name"];
     $lastname = $_POST["last_name"];
     $username = $_POST["username"];
@@ -16,28 +16,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $gender = $_POST["gender"];
     $dob = $_POST["dob"];
 
-    $sql = "SELECT * FROM `candidates` WHERE username = '$username'";
+    $diff = (date('Y') - date('Y', strtotime($dob)));
+    if ($diff < 18) {
+        header("Location: /registration.php?msg= Age should be above 18 years");
+    } else {
 
-    $result = mysqli_query($conn, $sql);
+        $sql = "SELECT * FROM `candidates` WHERE username = '$username'";
 
-    $num = mysqli_num_rows($result);
-    if ($num == 0) {
-        if (($password == $cpassword) && $exists == false) {
-            $hash = password_hash(
-                $password,
-                PASSWORD_DEFAULT
-            );
-            $sql = "INSERT INTO `candidates` ( `firstname`, `lastname` , `username`, `email` , `password`, `gender` , `dob` ) VALUES ('$firstname' , '$lastname', '$username', '$email' , '$hash', '$gender' , '$dob' )";
-            $result = mysqli_query($conn, $sql);
-            if ($result) {
-                $showAlert = true;
+        $result = mysqli_query($conn, $sql);
+
+        $num = mysqli_num_rows($result);
+        if ($num == 0) {
+            if (($password == $cpassword) && $exists == false) {
+                $hash = password_hash(
+                    $password,
+                    PASSWORD_DEFAULT
+                );
+                $sql = "INSERT INTO `candidates` ( `firstname`, `lastname` , `username`, `email` , `password`, `gender` , `dob` ) VALUES ('$firstname' , '$lastname', '$username', '$email' , '$hash', '$gender' , '$dob' )";
+                $result = mysqli_query($conn, $sql);
+                if ($result) {
+                    $showAlert = true;
+                }
+            } else {
+                header("Location: /registration.php?msg= Password do not match");
             }
-        } else {
-            $showError = "Passwords do not match";
         }
-    }
-    if ($num > 0) {
-        $exists = "Username already exist";
+        if ($num > 0) {
+            header("Location: /registration.php?msg= Username already exist");
+        }
     }
 }
 
@@ -167,8 +173,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .signup-form form a:hover {
             text-decoration: underline;
         }
+
         .statusmsgerror {
-            color: red ;
+            color: red;
         }
     </style>
 </head>
@@ -199,7 +206,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <form action="/registration.php" method="post">
             <h2>Register</h2>
             <p class="hint-text">Create your account. Register as a new voter </p>
-
+            <?php
+            if (isset($_GET['msg'])) {
+                echo '<span style="color: red">' . $_GET["msg"] . '</span>';
+            }
+            ?>
             <div class="form-group">
                 <div class="row">
                     <div class="col-xs-6"><input type="text" class="form-control" name="first_name" placeholder="First Name" required="required"></div>
@@ -225,7 +236,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input type="radio" name="gender" id="female" value="female">
             </div>
             <div class="form-group">
-                <input type="date" placeholder="Select your age" id="age" name="dob">
+                <input type="date" placeholder="Select your age" id="age" name="dob" max="<?= date('Y-m-d'); ?>" required="required">
             </div>
             <!-- <div class="form-group">
                 <label class="checkbox-inline"><input type="checkbox" required="required"> I accept the <a href="#">Terms of Use</a> &amp; <a href="#">Privacy Policy</a></label>

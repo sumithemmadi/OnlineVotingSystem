@@ -1,29 +1,24 @@
 <?php
-   include("config.php");
-   session_start();
-   
-   if($_SERVER["REQUEST_METHOD"] == "POST") {
-      // username and password sent from form 
-      
-      $myusername = mysqli_real_escape_string($db,$_POST['username']);
-      $mypassword = mysqli_real_escape_string($db,$_POST['password']); 
-      
-      $sql = "SELECT id FROM admin WHERE username = '$myusername' and passcode = '$mypassword'";
-      $result = mysqli_query($db,$sql);
-      $row = mysqli_fetch_array($result,MYSQLI_ASSOC);
-      $active = $row['active'];
-      
-      $count = mysqli_num_rows($result);
-		
-      if($count == 1) {
-         session_register("myusername");
-         $_SESSION['login_user'] = $myusername;
-         
-         header("location: welcome.php");
-      }else {
-         $error = "Your Login Name or Password is invalid";
-      }
-   }
+session_start();
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+	include("dbconnect.php");
+	$username = $_POST['username'];
+	$password = $_POST['password'];
+
+	$sql = "SELECT `password` FROM candidates WHERE username = '$username'";
+
+	$result = mysqli_query($conn, $sql);
+	$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+	$count = mysqli_num_rows($result);
+	
+	if (password_verify($password, $row['password'])) {
+		$_SESSION['login_user'] = $username;
+		header("location: dashboard.php");
+	} else {
+		header("Location: login.php?msg=* Invalid username or password.");
+	}
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -173,9 +168,14 @@
 		</nav>
 	</div>
 	<div class="signup-form">
-		<form action="/examples/actions/confirmation.php" method="post">
+		<form action="/login.php" method="post">
 			<h2>Login</h2>
 			<p class="hint-text">Login to your account.</p>
+			<?php
+			if(isset($_GET['msg'])){
+				echo '<span style="color: red">'.$_GET["msg"].'</span>';
+			}
+			?>
 			<div class="form-group">
 				<input type="text" class="form-control" name="username" placeholder="username" required="required">
 			</div>

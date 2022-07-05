@@ -15,7 +15,7 @@ $conn = mysqli_connect(
 
 
 if ($conn) {
-    echo "success";
+    $status = "success";
 } else {
     die("Error" . mysqli_connect_error());
 }
