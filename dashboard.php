@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (isset($_SESSION['login_user'])) {
-	include("dbconnect.php");
+    include("dbconnect.php");
     $username = $_SESSION['login_user'];
     $sql = "SELECT * FROM candidates WHERE username = '$username'";
 
@@ -29,13 +29,13 @@ if (isset($_SESSION['login_user'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
     <title>ONLINE VOTING SYSTEM | DASHBOARD</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.18.0/jquery.validate.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.18.0/additional-methods.js"></script>
+    <script src="/js/jquery.validate.js"></script>
+    <script src="/js/additional-methods.js"></script>
     <style>
         body {
             color: #fff;
@@ -211,7 +211,7 @@ if (isset($_SESSION['login_user'])) {
                 </tr>
                 <tr>
                     <td>Name</td>
-                    <td><?php echo  $row['firstname']." ".$row['lastname'] ?></td>
+                    <td><?php echo  $row['firstname'] . " " . $row['lastname'] ?></td>
                 </tr>
                 <tr>
                     <td>Voter ID</td>
@@ -232,7 +232,7 @@ if (isset($_SESSION['login_user'])) {
                 </tr>
                 <tr>
                     <td>Age</td>
-                    <td><?php echo $age." Years"  ?></td>
+                    <td><?php echo $age . " Years"  ?></td>
                 </tr>
                 <tr>
                     <td>Phone Number</td>

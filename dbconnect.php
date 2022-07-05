@@ -19,4 +19,3 @@ if ($conn) {
 } else {
     die("Error" . mysqli_connect_error());
 }
-?>

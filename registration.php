@@ -57,14 +57,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
-    <title>Bootstrap Simple Registration Form</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <title>Registration Form</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.18.0/jquery.validate.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.18.0/additional-methods.js"></script>
+    <script src="/js/jquery.validate.js"></script>
+    <script src="/js/additional-methods.js"></script>
     <style>
         body {
             color: #fff;
@@ -179,13 +179,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             color: red;
         }
 
-        .regbox{
+        .regbox {
             color: #999;
             border-radius: 3px;
             margin-bottom: 15px;
             background: #f2f3f7;
             box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
-            padding: 30px; 
+            padding: 30px;
             color: #5cb85c;
             text-decoration: none;
         }
@@ -252,7 +252,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input type="radio" name="gender" id="female" value="female">
             </div>
             <div class="form-group">
-                <input type="date" placeholder="Select your age" id="age" name="dob" max="'.$todayDate.'" required="required">
+                <input type="date" placeholder="Select your age" id="age" name="dob" max="' . $todayDate . '" required="required">
             </div>
             <div class="form-group">
                 <button type="submit" class="btn btn-success btn-lg btn-block">Register Now</button>
