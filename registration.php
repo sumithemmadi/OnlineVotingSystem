@@ -3,6 +3,7 @@
 $showAlert = false;
 $showError = false;
 $exists = false;
+$regstatus = false;
 session_start();
 include("dbconnect.php");
 
@@ -35,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $sql = "INSERT INTO `candidates` ( `firstname`, `lastname` , `username`, `email` , `password`, `gender` , `dob` ) VALUES ('$firstname' , '$lastname', '$username', '$email' , '$hash', '$gender' , '$dob' )";
                 $result = mysqli_query($conn, $sql);
                 if ($result) {
-                    $showAlert = true;
+                    $regstatus = true;
                 }
             } else {
                 header("Location: /registration.php?msg= Password do not match");
@@ -203,14 +204,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </nav>
     </div>
     <div class="signup-form">
+        <?php
+        if(!$regstatus){
+            echo '
         <form action="/registration.php" method="post">
             <h2>Register</h2>
             <p class="hint-text">Create your account. Register as a new voter </p>
-            <?php
+            ';
             if (isset($_GET['msg'])) {
                 echo '<span style="color: red">' . $_GET["msg"] . '</span>';
             }
-            ?>
+            echo '
             <div class="form-group">
                 <div class="row">
                     <div class="col-xs-6"><input type="text" class="form-control" name="first_name" placeholder="First Name" required="required"></div>
@@ -236,15 +240,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input type="radio" name="gender" id="female" value="female">
             </div>
             <div class="form-group">
-                <input type="date" placeholder="Select your age" id="age" name="dob" max="<?= date('Y-m-d'); ?>" required="required">
+                <input type="date" placeholder="Select your age" id="age" name="dob" max="<?= date(\'Y-m-d\'); ?>" required="required">
             </div>
-            <!-- <div class="form-group">
-                <label class="checkbox-inline"><input type="checkbox" required="required"> I accept the <a href="#">Terms of Use</a> &amp; <a href="#">Privacy Policy</a></label>
-            </div> -->
             <div class="form-group">
                 <button type="submit" class="btn btn-success btn-lg btn-block">Register Now</button>
             </div>
-        </form>
+        </form>';
+        } else {
+            echo '<br><br><span style="color: green;">Your are successfully registered</span><br>';
+        }
+        ?>
         <div class="text-center">Already have an account? <a href="/login.php">Sign in</a></div>
     </div>
 </body>
