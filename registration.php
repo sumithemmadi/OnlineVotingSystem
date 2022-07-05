@@ -178,6 +178,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .statusmsgerror {
             color: red;
         }
+
+        .regbox{
+            color: #999;
+            border-radius: 3px;
+            margin-bottom: 15px;
+            background: #f2f3f7;
+            box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+            padding: 30px; 
+            color: #5cb85c;
+            text-decoration: none;
+        }
     </style>
 </head>
 
@@ -205,14 +216,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
     <div class="signup-form">
         <?php
-        if(!$regstatus){
+        if (!$regstatus) {
+            $todayDate = date('Y-m-d');
             echo '
         <form action="/registration.php" method="post">
             <h2>Register</h2>
             <p class="hint-text">Create your account. Register as a new voter </p>
             ';
             if (isset($_GET['msg'])) {
-                echo '<span style="color: red">' . $_GET["msg"] . '</span>';
+                echo '<span style="color: red">' . $_GET["msg"] . '</span><br>';
             }
             echo '
             <div class="form-group">
@@ -240,14 +252,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input type="radio" name="gender" id="female" value="female">
             </div>
             <div class="form-group">
-                <input type="date" placeholder="Select your age" id="age" name="dob" max="<?= date(\'Y-m-d\'); ?>" required="required">
+                <input type="date" placeholder="Select your age" id="age" name="dob" max="'.$todayDate.'" required="required">
             </div>
             <div class="form-group">
                 <button type="submit" class="btn btn-success btn-lg btn-block">Register Now</button>
             </div>
+
         </form>';
         } else {
-            echo '<br><br><span style="color: green;">Your are successfully registered</span><br>';
+            echo '<div class="regbox"><span style="color: green;">Your are successfully registered</span><br></div>';
         }
         ?>
         <div class="text-center">Already have an account? <a href="/login.php">Sign in</a></div>

@@ -1,7 +1,20 @@
-<?php 
+<?php
 session_start();
-if(isset($_SESSION['login_user'])){
+if (isset($_SESSION['login_user'])) {
+	include("dbconnect.php");
     $username = $_SESSION['login_user'];
+    $sql = "SELECT * FROM candidates WHERE username = '$username'";
+
+    $result = mysqli_query($conn, $sql);
+    $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+    $count = mysqli_num_rows($result);
+
+    if ($count == 0) {
+        session_destroy();
+        header("location: login.php");
+    } else {
+        $age  = (date('Y') - date('Y', strtotime($row['dob'])));
+    }
 } else {
     header("Location: login.php");
 }
@@ -136,6 +149,34 @@ if(isset($_SESSION['login_user'])){
         .statusmsgerror {
             color: red;
         }
+
+        .tablebox {
+            color: #999;
+            border-radius: 3px;
+            margin-bottom: 15px;
+            background: #f2f3f7;
+            box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            color: black;
+            text-decoration: none;
+        }
+
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td,
+        th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
     </style>
 </head>
 
@@ -146,65 +187,59 @@ if(isset($_SESSION['login_user'])){
                 <a class="navbar-brand" href="#">ONLINE VOTING SYSTEM</a>
                 <ul class="nav navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link active" href="/login.php">Login</a>
+                        <a class="nav-link" href="/dashboard.php">Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/registration.php">Sign Up</a>
+                        <a class="nav-link active" href="/events.php">Events</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/vote.php">Vote</a>
                     </li>
                 </ul>
-                <!-- <div class="list-inline pull-right">
-                    <a id="logout-link" class="btn btn-raised btn-default waves-effect">Logout</a>&nbsp;&nbsp;
-                </div> -->
+                <div class="list-inline pull-right">
+                    <a id="logout-link" class="btn btn-raised btn-default waves-effect" href="/logout.php">Logout</a>&nbsp;&nbsp;
+                </div>
             </div>
         </nav>
     </div>
     <div class="signup-form">
-        <form action="/registration.php" method="post">
-            <h2>Register</h2>
-            <p class="hint-text">Create your account. Register as a new voter </p>
-            <?php
-            if (isset($_GET['msg'])) {
-                echo '<span style="color: red">' . $_GET["msg"] . '</span>';
-            }
-            ?>
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-xs-6"><input type="text" class="form-control" name="first_name" placeholder="First Name" required="required"></div>
-                    <div class="col-xs-6"><input type="text" class="form-control" name="last_name" placeholder="Last Name" required="required"></div>
-                </div>
-            </div>
-            <div class="form-group">
-                <input type="text" class="form-control" name="username" placeholder="Username" required="required">
-            </div>
-            <div class="form-group">
-                <input type="email" class="form-control" name="email" placeholder="Email" required="required">
-            </div>
-            <div class="form-group">
-                <input type="password" class="form-control" name="password" placeholder="Password" required="required">
-            </div>
-            <div class="form-group">
-                <input type="password" class="form-control" name="confirm_password" placeholder="Confirm Password" required="required">
-            </div>
-            <div class="form-group">
-                <label for="male">Male</label>
-                <input type="radio" name="gender" id="male" value="male" checked>
-                <label for="female">Female</label>
-                <input type="radio" name="gender" id="female" value="female">
-            </div>
-            <div class="form-group">
-                <input type="date" placeholder="Select your age" id="age" name="dob" max="<?= date('Y-m-d'); ?>" required="required">
-            </div>
-            <!-- <div class="form-group">
-                <label class="checkbox-inline"><input type="checkbox" required="required"> I accept the <a href="#">Terms of Use</a> &amp; <a href="#">Privacy Policy</a></label>
-            </div> -->
-            <div class="form-group">
-                <button type="submit" class="btn btn-success btn-lg btn-block">Register Now</button>
-            </div>
-        </form>
-        <div class="text-center">Already have an account? <a href="/login.php">Sign in</a></div>
+        <div class="tablebox">
+            <table>
+                <tr>
+                    <th><?php echo $username ?></th>
+                    <!-- <th>Contact</th> -->
+                </tr>
+                <tr>
+                    <td>Name</td>
+                    <td><?php echo  $row['firstname']." ".$row['lastname'] ?></td>
+                </tr>
+                <tr>
+                    <td>Voter ID</td>
+                    <td><?php echo $row['voter_id'] ?></td>
+                </tr>
+                <tr>
+                    <td>Email</td>
+                    <td><?php echo $row['email'] ?></td>
+                </tr>
+                <tr>
+                    <td>Gender</td>
+                    <td><?php echo $row['gender'] ?></td>
+
+                </tr>
+                <tr>
+                    <td>DOB</td>
+                    <td><?php echo $row['dob']." Years" ?></td>
+                </tr>
+                <tr>
+                    <td>Age</td>
+                    <td><?php echo $age ?></td>
+                </tr>
+                <tr>
+                    <td>Phone Number</td>
+                    <td>non</td>
+                </tr>
+            </table>
+        </div>
     </div>
 </body>
 
