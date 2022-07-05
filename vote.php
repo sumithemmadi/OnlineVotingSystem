@@ -1,185 +1,255 @@
 <?php
-require('connection.php');
+require('dbconnect.php');
 
 session_start();
-//If your session isn't valid, it returns you to the login screen for protection
-if(empty($_SESSION['member_id'])){
- header("location:access-denied.php");
+if (empty($_SESSION['login_user'])) {
+  header("location: access-denied.php");
+} else {
+  $username = $_SESSION['login_user'];
+  $sql = "SELECT * FROM `candidates` WHERE username = '$username'";
+  $candidate_result = mysqli_query($conn, $sql);
+  $candidate_rows = mysqli_fetch_array($candidate_result, MYSQLI_ASSOC);
+  $candidate_count = mysqli_num_rows($candidate_result);
+  if ($candidate_count == 0) {
+    session_destroy();
+    header("Location: /login.php");
+  }
 }
 
+if (empty($_GET['event_id'])) {
+  header("location: events.php");
+} else {
+  $event_id = $_GET['event_id'];
+  $sql = "SELECT * FROM events WHERE event_id = '$event_id'";
+
+  $result = mysqli_query($conn, $sql);
+  $events = mysqli_fetch_array($result, MYSQLI_ASSOC);
+  $count = mysqli_num_rows($result);
+
+  if ($count == 0) {
+    $no_event = true;
+  } else {
+    $no_event = false;
+  }
+}
+
+
 ?>
-<?php
-// retrieving positions sql query
-$positions=mysqli_query($con, "SELECT * FROM tbPositions");
-?> 
-<?php
-    // retrieval sql query
-// check if Submit is set in POST
- if (isset($_POST['Submit']))
- {
- // get position value
- $position = addslashes( $_POST['position'] ); //prevents types of SQL injection
- 
- // retrieve based on position
- $result = mysqli_query($con,"SELECT * FROM tbCandidates WHERE candidate_position='$position'");
- // redirect back to vote
- //header("Location: vote.php");
- }
- else
- // do something
-  
-?>
-<html>
+
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<title>Simple PHP Polling System:Voting Page</title>
-<link href="css/user_styles.css" rel="stylesheet" type="text/css" />   
-<script language="JavaScript" src="js/user.js">
-</script>
-<script type="text/javascript">
-function getVote(int)
-{
-if (window.XMLHttpRequest)
-  {// code for IE7+, Firefox, Chrome, Opera, Safari
-  xmlhttp=new XMLHttpRequest();
-  }
-else
-  {// code for IE6, IE5
-  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-  }
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
+  <title>Access Denied</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-	if(confirm("Your vote is for "+int))
-	{
-  var pos=document.getElementById("str").value;
-  var id=document.getElementById("hidden").value;
-  xmlhttp.open("GET","save.php?vote="+int+"&user_id="+id+"&position="+pos,true);
-  xmlhttp.send();
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.18.0/jquery.validate.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.18.0/additional-methods.js"></script>
+  <style>
+    body {
+      color: #fff;
+      background: #63738a;
+      font-family: 'Roboto', sans-serif;
+    }
 
-  xmlhttp.onreadystatechange =function()
-{
-	if(xmlhttp.readyState ==4 && xmlhttp.status==200)
-	{
-  //  alert("dfdfd");
-	document.getElementById("error").innerHTML=xmlhttp.responseText;
-	}
-}
+    .form-control {
+      height: 40px;
+      box-shadow: none;
+      color: #969fa4;
+    }
 
-  }
-	else
-	{
-	alert("Choose another candidate ");
-	}
-	
-}
+    .form-control:focus {
+      border-color: #5cb85c;
+    }
 
-function getPosition(String)
-{
-if (window.XMLHttpRequest)
-  {// code for IE7+, Firefox, Chrome, Opera, Safari
-  xmlhttp=new XMLHttpRequest();
-  }
-else
-  {// code for IE6, IE5
-  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-  }
+    .form-control,
+    .btn {
+      border-radius: 3px;
+    }
 
-xmlhttp.open("GET","vote.php?position="+String,true);
-xmlhttp.send();
-}
-</script>
-<script type="text/javascript">
-$(document).ready(function(){
-   var j = jQuery.noConflict();
-    j(document).ready(function()
-    {
-        j(".refresh").everyTime(1000,function(i){
-            j.ajax({
-              url: "admin/refresh.php",
-              cache: false,
-              success: function(html){
-                j(".refresh").html(html);
-              }
-            })
-        })
-        
-    });
-   j('.refresh').css({color:"green"});
-});
-</script>
+    .signup-form {
+      width: 400px;
+      margin: 0 auto;
+      padding: 30px 0;
+    }
+
+    .signup-form h2 {
+      color: #636363;
+      margin: 0 0 15px;
+      position: relative;
+      text-align: center;
+    }
+
+    .signup-form h2:before,
+    .signup-form h2:after {
+      content: "";
+      height: 2px;
+      width: 30%;
+      background: #d4d4d4;
+      position: absolute;
+      top: 50%;
+      z-index: 2;
+    }
+
+    .signup-form h2:before {
+      left: 0;
+    }
+
+    .signup-form h2:after {
+      right: 0;
+    }
+
+    .signup-form .hint-text {
+      color: #999;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .signup-form form {
+      color: #999;
+      border-radius: 3px;
+      margin-bottom: 15px;
+      background: #f2f3f7;
+      box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+      padding: 30px;
+    }
+
+    .signup-form .form-group {
+      margin-bottom: 20px;
+    }
+
+    .signup-form input[type="checkbox"] {
+      margin-top: 3px;
+    }
+
+    .signup-form .btn {
+      font-size: 16px;
+      font-weight: bold;
+      min-width: 140px;
+      outline: none !important;
+    }
+
+    .signup-form .row div:first-child {
+      padding-right: 10px;
+    }
+
+    .signup-form .row div:last-child {
+      padding-left: 10px;
+    }
+
+    .signup-form a {
+      color: #fff;
+      text-decoration: underline;
+    }
+
+    .signup-form a:hover {
+      text-decoration: none;
+    }
+
+    .signup-form form a {
+      color: #5cb85c;
+      text-decoration: none;
+    }
+
+    .signup-form form a:hover {
+      text-decoration: underline;
+    }
+
+    .statusmsgerror {
+      color: red;
+    }
+
+    .regbox {
+      color: #999;
+      border-radius: 3px;
+      margin-bottom: 15px;
+      background: #f2f3f7;
+      box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+      padding: 30px;
+      color: #5cb85c;
+      text-decoration: none;
+    }
+
+    .partytext {
+      font-size: 20px;
+    }
+  </style>
 </head>
-<body bgcolor="tan">
-<center>
-<b><font color = "brown" size="6">Simple PHP Polling System</font></b></center><br><br>
+
 <body>
-<div id="page">
-<div id="header">
-  <h1>CURRENT POLLS</h1>
-  <a href="student.php">Home</a> | <a href="vote.php">Current Polls</a> | <a href="manage-profile.php">Manage My Profile</a> | <a href="changepass.php">Change Password</a>| <a href="logout.php">Logout</a>
-</div>
-<div class="refresh">
-</div>
-<div id="container">
-<table width="420" align="center">
-<form name="fmNames" id="fmNames" method="post" action="vote.php" onSubmit="return positionValidate(this)">
-<tr>
-    <td>Choose Position</td>
-    <td><SELECT NAME="position" id="position" onclick="getPosition(this.value)">
-    <OPTION VALUE="select">select
-    <?php 
-    //loop through all table rows
-    while ($row=mysqli_fetch_array($positions)){
-    echo "<OPTION VALUE=$row[position_name]>$row[position_name]"; 
-    //mysql_free_result($positions_retrieved);
-    //mysql_close($link);
+  <div style="background-color: white;">
+    <nav class="navbar navbar-dark blue">
+      <div class="container">
+        <a class="navbar-brand" href="#">ONLINE VOTING SYSTEM</a>
+        <ul class="nav navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="/dashboard.php">Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/events.php">Events</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/vote.php">Vote</a>
+          </li>
+        </ul>
+        <div class="list-inline pull-right">
+          <a id="logout-link" class="btn btn-raised btn-default waves-effect" href="/logout.php">Logout</a>&nbsp;&nbsp;
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <div class="signup-form">
+    <?php
+    if ($no_event) {
+      echo '<div class="regbox"><p style="color: red">No event with id  ' . $event_id . '</p></div>';
+    } else {
+      $sql = mysqli_query($conn, "SELECT * FROM vote where event_id='$event_id' and username='$username'");
+      if (mysqli_num_rows($sql)) {
+        echo '<div class="regbox"><p style="color: red">You have already marked your vote.</p></div>';
+      } else {
+    ?>
+        <form action="/save_vote.php" method="post">
+          <h2>VOTEING</h2>
+          <h3 id="question" style="color: black;"><?php echo $events['eventName'] ?></h3>
+          <div class="form-group">
+            <div class="col-xs-6">
+              <input type="hidden" class="form-control" name="event_id" value="<?php echo $event_id; ?>" readonly>
+            </div>
+            <div class="col-xs-6">
+              <input type="hidden" class="form-control" name="voter_id" value="<?php echo $candidate_rows['voter_id']; ?>" readonly>
+            </div>
+          </div>
+          <div class="form-group">
+            <input type="radio" name="vote_value" value="<?php echo $events['partyName1'] ?>">
+            <label class="partytext" for="<?php echo $events['partyName1'] ?>"><?php echo $events['partyName1'] ?></label>
+            <br>
+            <input type="radio" name="vote_value" value="<?php echo $events['partyName2'] ?>">
+            <label class="partytext" for="<?php echo $events['partyName2'] ?>"><?php echo $events['partyName2'] ?></label>
+            <br>
+            <input type="radio" name="vote_value" value="<?php echo $events['partyName3'] ?>">
+            <label class="partytext" for="<?php echo $events['partyName3'] ?>"><?php echo $events['partyName3'] ?></label>
+            <br>
+            <input type="radio" name="vote_value" value="<?php echo $events['partyName4'] ?>">
+            <label class="partytext" for="<?php echo $events['partyName4'] ?>"><?php echo $events['partyName4'] ?></label>
+            <br>
+          </div>
+          <div class="form-group">
+            <button type="submit" class="btn btn-success btn-lg btn-block">Vote Now</button>
+          </div>
+        </form>
+    <?php
+      }
     }
     ?>
-    </SELECT></td>
-    <td><input type="hidden" id="hidden" value="<?php echo $_SESSION['member_id']; ?>" /></td>
-    <td><input type="hidden" id="str" value="<?php echo $_REQUEST['position']; ?>" /></td>
-    <td><input type="submit" name="Submit" value="See Candidates" /></td>
-</tr>
-<tr>
-    <td>&nbsp;</td> 
-    <td>&nbsp;</td>
-</tr>
-</form> 
-</table>
-<table width="270" align="center">
-<form>
-<tr>
-    <th>Candidates:</th>
-</tr>
-
-
-<?php
-//loop through all table rows
-//if (mysql_num_rows($result)>0){
-  if (isset($_POST['Submit']))
-  {
-while ($row=mysqli_fetch_array($result)){
-echo "<tr>";
-echo "<td>" . $row['candidate_name']."</td>";
-echo "<td><input type='radio' name='vote' value='$row[candidate_name]' onclick='getVote(this.value)' /></td>";
-echo "</tr>";
-}
-mysqli_free_result($result);
-mysqli_close($con);
-//}
-  }
-else
-// do nothing
-?>
-<tr>
-    <h3>NB: Click a circle under a respective candidate to cast your vote. You can't vote more than once in a respective position. This process can not be undone so think wisely before casting your vote.</h3>
-    <td>&nbsp;</td>
-</tr>
-</form>
-</table>
-<center><span id="error"></span></center>
-</div>
-<div id="footer"> 
-  <div class="bottom_addr">&copy; 2012 Simple PHP Polling System. All Rights Reserved</div>
-</div>
-</div>
+  </div>
 </body>
+
 </html>

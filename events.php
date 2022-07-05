@@ -1,23 +1,22 @@
 <?php
+require('dbconnect.php');
+
 session_start();
-if (isset($_SESSION['login_user'])) {
-	include("dbconnect.php");
-    $username = $_SESSION['login_user'];
-    $sql = "SELECT * FROM candidates WHERE username = '$username'";
-
-    $result = mysqli_query($conn, $sql);
-    $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
-    $count = mysqli_num_rows($result);
-
-    if ($count == 0) {
-        session_destroy();
-        header("location: login.php");
-    } else {
-        $age  = (date('Y') - date('Y', strtotime($row['dob'])));
-    }
-} else {
-    header("Location: login.php");
+if (empty($_SESSION['login_user'])) {
+    header("location: access-denied.php");
 }
+
+$sql = "SELECT * FROM events";
+
+$result = mysqli_query($conn, $sql);
+$count = mysqli_num_rows($result);
+
+if ($count == 0) {
+    $no_event = true;
+} else {
+    $no_event = false;
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -28,7 +27,7 @@ if (isset($_SESSION['login_user'])) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
-    <title>ONLINE VOTING SYSTEM | DASHBOARD</title>
+    <title>ONLINE VOTING SYSTEM | Events</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
@@ -150,32 +149,19 @@ if (isset($_SESSION['login_user'])) {
             color: red;
         }
 
-        .tablebox {
+        .regbox {
             color: #999;
             border-radius: 3px;
             margin-bottom: 15px;
             background: #f2f3f7;
             box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
             padding: 30px;
-            color: black;
+            color: #5cb85c;
             text-decoration: none;
         }
 
-        table {
-            font-family: arial, sans-serif;
-            border-collapse: collapse;
-            width: 100%;
-        }
-
-        td,
-        th {
-            border: 1px solid #dddddd;
-            text-align: left;
-            padding: 8px;
-        }
-
-        tr:nth-child(even) {
-            background-color: #dddddd;
+        .partytext {
+            font-size: 20px;
         }
     </style>
 </head>
@@ -202,43 +188,24 @@ if (isset($_SESSION['login_user'])) {
             </div>
         </nav>
     </div>
-    <div class="signup-form">
-        <div class="tablebox">
-            <table>
-                <tr>
-                    <th><?php echo $username ?></th>
-                    <!-- <th>Contact</th> -->
-                </tr>
-                <tr>
-                    <td>Name</td>
-                    <td><?php echo  $row['firstname']." ".$row['lastname'] ?></td>
-                </tr>
-                <tr>
-                    <td>Voter ID</td>
-                    <td><?php echo $row['voter_id'] ?></td>
-                </tr>
-                <tr>
-                    <td>Email</td>
-                    <td><?php echo $row['email'] ?></td>
-                </tr>
-                <tr>
-                    <td>Gender</td>
-                    <td><?php echo $row['gender'] ?></td>
 
-                </tr>
-                <tr>
-                    <td>DOB</td>
-                    <td><?php echo $row['dob'] ?></td>
-                </tr>
-                <tr>
-                    <td>Age</td>
-                    <td><?php echo $age." Years"  ?></td>
-                </tr>
-                <tr>
-                    <td>Phone Number</td>
-                    <td>non</td>
-                </tr>
-            </table>
+    <div class="signup-form">
+        <div class="regbox">
+            <?php
+            if ($no_event) {
+                echo '<p style="color: red">No events </p>';
+            } else {
+                // echo "$count";
+                $std_num = 0;
+                while ($events = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+                    echo '
+                    <div class="form-group">
+                        <a class="btn btn-success btn-lg btn-block" href="/vote.php?event_id=' . $events["event_id"] . '" >' . $events["eventName"] . '</a>
+                    </div>';
+                    $std_num++;
+                }
+            }
+            ?>
         </div>
     </div>
 </body>
