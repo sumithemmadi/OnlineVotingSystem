@@ -340,17 +340,17 @@ if (empty($_GET['event_id'])) {
 
           $std_num = 0;
           while ($candidates = mysqli_fetch_array($result1, MYSQLI_ASSOC)) {
-            if($candidates['voteParty'] == $events['partyName1']) {
-              ++$t_party_name1;
-            }elseif($candidates['voteParty'] == $events['partyName2']) {
-              ++$t_party_name2;
-            }
-            elseif($candidates['voteParty'] == $events['partyName3']) {
-              ++$t_party_name3;
-            }
-            else($candidates['voteParty'] == $events['partyName4']) {
-              ++$t_party_name4;
-            };
+            // $t_party_name1 = $t_party_name2 = $t_party_name3 = $t_party_name4 = 0;
+            // if( $candidates['voteParty'] == $events['partyName1']) {
+            //   ++$t_party_name1;
+            // } elseif($candidates['voteParty'] == $events['partyName2']) {
+            //   ++$t_party_name2;
+            // } elseif($candidates['voteParty'] == $events['partyName3']) {
+            //   ++$t_party_name3;
+            // }
+            // else($candidates['voteParty'] == $events['partyName4']) {
+            //   ++$t_party_name4;
+            // }
             echo '
                     <tr>
                         <td></td>
