@@ -17,7 +17,7 @@ if (empty($_SESSION['admin_user'])) {
 }
 
 if (empty($_GET['event_id'])) {
-  header("location: events.php");
+  header("location: admin_events.php");
 } else {
   $event_id = $_GET['event_id'];
   $sql = "SELECT * FROM events WHERE event_id = '$event_id'";
@@ -112,7 +112,7 @@ if (empty($_GET['event_id'])) {
       text-align: center;
     }
 
-    .signup-form form {
+    .signup-form .x-form {
       color: #999;
       border-radius: 3px;
       margin-bottom: 15px;
@@ -230,10 +230,13 @@ if (empty($_GET['event_id'])) {
         <a class="navbar-brand" href="#">ONLINE VOTING SYSTEM</a>
         <ul class="nav navbar-nav">
           <li class="nav-item">
-            <a class="nav-link" href="/dashboard.php">Dashboard</a>
+            <a class="nav-link" href="/home.php">Dashboard</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active" href="/events.php">Events</a>
+            <a class="nav-link active" href="/voterlist.php">Voter List</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/admin_events.php">Events</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/admin_votes.php">Votes</a>
@@ -273,32 +276,42 @@ if (empty($_GET['event_id'])) {
           <div class="col-xs-6">
             <button type="submit" class="btn btn-success btn-lg btn-block" id="edit_event_btn" onclick="editEvent();">Edit Event</button>
           </div>
+
           <div class="col-xs-6">
-            <button type="submit" class="btn btn-success btn-lg btn-block" id="delete_btn">Delete Event</button>
+            <form method="post">
+              <button type="submit" class="btn btn-success btn-lg btn-block" name="deleteButton" id="deleteButton" onclick="document.location.href='/admin_events.php';">Delete Event</button>
+            </form>
+            <?php
+            if (array_key_exists('deleteButton', $_POST)) {
+              mysqli_query($conn, "DELETE FROM events WHERE event_id='$event_id'");
+              header("Location: admin_events.php");
+            } else {
+              header("Location: access-denied.php");
+            }
+            ?>
           </div>
         </div>
       </div>
       <br><br><br>
-      <form action="/edit_event.php" id="form" method="post">
+      <form action="/update_event.php" class="x-form" id="form" method="post">
         <h2>VOTEING</h2>
-        <h3 id="question" style="color: black;"></h3>
         <div class="form-group">
-          Event Id<input type="text" class="form-control" name="event_id" value="<?php echo $event_id; ?>" readonly>
+          <input type="hidden" class="form-control" name="event_id" value="<?php echo $event_id; ?>" readonly>
         </div>
         <div class="form-group">
           Event Id<input type="text" class="form-control" name="event_name" value="<?php echo $events['eventName'] ?>">
         </div>
         <div class="form-group">
-          Party Name1 <input type="text" class="form-control" name="vote_value1" value="<?php echo $events['partyName1'] ?>">
+          Party Name1 <input type="text" class="form-control" name="partyName1" value="<?php echo $events['partyName1'] ?>">
         </div>
         <div class="form-group">
-          Party Name1 <input type="text" class="form-control" name="vote_value2" value="<?php echo $events['partyName2'] ?>">
+          Party Name2 <input type="text" class="form-control" name="partyName2" value="<?php echo $events['partyName2'] ?>">
         </div>
         <div class="form-group">
-          Party Name1 <input type="text" class="form-control" name="vote_value3" value="<?php echo $events['partyName3'] ?>">
+          Party Name3 <input type="text" class="form-control" name="partyName3" value="<?php echo $events['partyName3'] ?>">
         </div>
         <div class="form-group">
-          Party Name1 <input type="text" class="form-control" name="vote_value4" value="<?php echo $events['partyName4'] ?>">
+          Party Name4 <input type="text" class="form-control" name="partyName4" value="<?php echo $events['partyName4'] ?>">
         </div>
         <div class="form-group">
           <button type="submit" class="btn btn-success btn-lg btn-block" id="update_btn" disabled>Update Now</button>
@@ -309,7 +322,7 @@ if (empty($_GET['event_id'])) {
         if ($no_event) {
           echo '<p style="color: red">No user found </p>';
         } else {
-          $sql1 = "SELECT * FROM vote where event_id='$event_id' and username='$username'";
+          $sql1 = "SELECT * FROM vote WHERE event_id='$event_id' AND username='$username'";
 
           $result1 = mysqli_query($conn, $sql1);
           $count1 = mysqli_num_rows($result1);

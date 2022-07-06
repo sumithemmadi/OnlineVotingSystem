@@ -1,22 +1,25 @@
 <?php
 session_start();
+if (isset($_SESSION['admin_user'])) {
+	header("Location: /home.php");
+} else {
+	if ($_SERVER["REQUEST_METHOD"] == "POST") {
+		include("dbconnect.php");
+		$username = $_POST['username'];
+		$password = $_POST['password'];
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-	include("dbconnect.php");
-	$username = $_POST['username'];
-	$password = $_POST['password'];
+		$sql = "SELECT `password` FROM candidates WHERE username = '$username'";
 
-	$sql = "SELECT `password` FROM candidates WHERE username = '$username'";
+		$result = mysqli_query($conn, $sql);
+		$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+		$count = mysqli_num_rows($result);
 
-	$result = mysqli_query($conn, $sql);
-	$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
-	$count = mysqli_num_rows($result);
-
-	if (password_verify($password, $row['password'])) {
-		$_SESSION['login_user'] = $username;
-		header("location: dashboard.php");
-	} else {
-		header("Location: login.php?msg=* Invalid username or password.");
+		if (password_verify($password, $row['password'])) {
+			$_SESSION['login_user'] = $username;
+			header("location: dashboard.php");
+		} else {
+			header("Location: login.php?msg=* Invalid username or password.");
+		}
 	}
 }
 ?>
@@ -190,6 +193,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			</div>
 		</form>
 		<div class="text-center">Create a account ? <a href="/registration.php">Sign up</a></div>
+		<div class="text-center"><a href="/admin.php">Login as admin</a></div>
 	</div>
 </body>
 
