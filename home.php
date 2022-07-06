@@ -1,9 +1,9 @@
 <?php
 session_start();
-if (isset($_SESSION['login_user'])) {
+if (isset($_SESSION['admin_user'])) {
     include("dbconnect.php");
     $username = $_SESSION['admin_user'];
-    $sql = "SELECT * FROM 'admindb' WHERE username = '$username'";
+    $sql = "SELECT * FROM `admindb` WHERE username = '$username'";
 
     $result = mysqli_query($conn, $sql);
     $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
@@ -190,10 +190,13 @@ if (isset($_SESSION['login_user'])) {
                         <a class="nav-link" href="/home.php">Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="/events.php">Voters List</a>
+                        <a class="nav-link active" href="/voterlist.php">Voters List</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/vote.php">Vote</a>
+                        <a class="nav-link active" href="/admin_events.php">Events</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin_vote.php">Votes</a>
                     </li>
                 </ul>
                 <div class="list-inline pull-right">

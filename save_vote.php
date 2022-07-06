@@ -20,6 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         $ins = mysqli_query($conn, "INSERT INTO vote (event_id, voter_id, username, voteParty, VoteDate ) VALUES ('$event_id', '$voter_id', '$username', '$voteParty', '$VoteDate')");
         mysqli_close($conn);
-        echo "<h3 style='color:blue'>Congrates You have submitted your vote for " . $voteParty . "</h3>";
+        echo "<h3 style='color:green'>Congrates You have submitted your vote for " . $voteParty . "</h3>";
     }
 }
+?>

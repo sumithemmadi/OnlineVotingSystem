@@ -2,11 +2,11 @@
 require('dbconnect.php');
 
 session_start();
-if (empty($_SESSION['login_user']) ) {
+if (empty($_SESSION['admin_user'])) {
     header("location: access-denied.php");
 }
 
-$sql = "SELECT * FROM events";
+$sql = "SELECT * FROM candidates";
 
 $result = mysqli_query($conn, $sql);
 $count = mysqli_num_rows($result);
@@ -95,7 +95,7 @@ if ($count == 0) {
             text-align: center;
         }
 
-        .signup-form form {
+        .signup-form {
             color: #999;
             border-radius: 3px;
             margin-bottom: 15px;
@@ -136,7 +136,7 @@ if ($count == 0) {
             text-decoration: none;
         }
 
-        .signup-form form a {
+        .signup-form a {
             color: #5cb85c;
             text-decoration: none;
         }
@@ -156,12 +156,48 @@ if ($count == 0) {
             background: #f2f3f7;
             box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
             padding: 30px;
+            width: 1000px;
+            margin-left: 25%;
             color: #5cb85c;
             text-decoration: none;
         }
 
         .partytext {
             font-size: 20px;
+        }
+
+
+        .statusmsgerror {
+            color: red;
+        }
+
+        .tablebox {
+            color: #999;
+            border-radius: 3px;
+            margin-bottom: 15px;
+            background: #f2f3f7;
+            box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            color: black;
+            text-decoration: none;
+        }
+
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td,
+        th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            color: black;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
         }
     </style>
 </head>
@@ -173,13 +209,16 @@ if ($count == 0) {
                 <a class="navbar-brand" href="#">ONLINE VOTING SYSTEM</a>
                 <ul class="nav navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="/dashboard.php">Dashboard</a>
+                        <a class="nav-link" href="/home.php">Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="/events.php">Events</a>
+                        <a class="nav-link active" href="/voterlist.php">Voter List</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/vote.php">Vote</a>
+                        <a class="nav-link active" href="/admin_events.php">Events</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin_votes.php">Vote</a>
                     </li>
                 </ul>
                 <div class="list-inline pull-right">
@@ -189,25 +228,53 @@ if ($count == 0) {
         </nav>
     </div>
 
-    <div class="signup-form">
-        <div class="regbox">
+
+    <div class="regbox">
+        <?php
+        if ($no_event) {
+            echo '<p style="color: red">No user found </p>';
+        } else {
+        ?>
+            <table>
+                <tr>
+                    <th>username</th>
+                    <th>firstname</th>
+                    <th>lastname</th>
+                    <th>voter Id</th>
+                    <th>Email</th>
+                    <th>Gender</th>
+                    <th>DOB</th>
+                    <th>AGE</th>
+                    <th>Delete</th>
+                </tr>
             <?php
-            if ($no_event) {
-                echo '<p style="color: red">No events </p>';
-            } else {
-                // echo "$count";
-                $std_num = 0;
-                while ($events = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
-                    echo '
-                    <div class="form-group">
-                        <a class="btn btn-success btn-lg btn-block" href="/vote.php?event_id=' . $events["event_id"] . '" >' . $events["eventName"] . '</a>
-                    </div>';
-                    $std_num++;
-                }
+
+            $std_num = 0;
+            while ($candidates = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+                echo '
+                    <tr>
+                        <td>' . $candidates['username'] . ' </td>
+                        <td>' . $candidates['firstname'] . ' </td>
+                        <td>' . $candidates['lastname'] . ' </td>
+                        <td>' . $candidates['voter_id'] . ' </td>
+                        <td>' . $candidates['email'] . ' </td>
+                        <td>' . $candidates['gender'] . ' </td>
+                        <td>' . $candidates['dob'] . ' </td>
+                        <td>' . (date('Y') - date('Y', strtotime($candidates['dob']))) . ' </td>
+                        <td class="row-delete">
+                            <form action="delete.php?name="' . $candidates['username'] . '" method="post">
+                                <input type="hidden" name="name" value="' . $candidates['username'] . '">
+                                <input type="submit" name="submit" value="Delete">
+                            </form>
+                        </td>
+                    </tr>';
+                $std_num++;
             }
+        }
             ?>
-        </div>
+            </table>
     </div>
+
 </body>
 
 </html>

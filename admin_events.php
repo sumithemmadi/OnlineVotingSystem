@@ -2,7 +2,7 @@
 require('dbconnect.php');
 
 session_start();
-if (empty($_SESSION['login_user']) ) {
+if (empty($_SESSION['admin_user']) ) {
     header("location: access-denied.php");
 }
 
@@ -173,13 +173,16 @@ if ($count == 0) {
                 <a class="navbar-brand" href="#">ONLINE VOTING SYSTEM</a>
                 <ul class="nav navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="/dashboard.php">Dashboard</a>
+                        <a class="nav-link" href="/home.php">Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="/events.php">Events</a>
+                        <a class="nav-link active" href="/voterlist.php">Voter List</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/vote.php">Vote</a>
+                        <a class="nav-link active" href="/admin_events.php">Events</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin_votes.php">Votes</a>
                     </li>
                 </ul>
                 <div class="list-inline pull-right">
@@ -200,7 +203,7 @@ if ($count == 0) {
                 while ($events = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
                     echo '
                     <div class="form-group">
-                        <a class="btn btn-success btn-lg btn-block" href="/vote.php?event_id=' . $events["event_id"] . '" >' . $events["eventName"] . '</a>
+                        <a class="btn btn-success btn-lg btn-block" href="/admin_votes.php?event_id=' . $events["event_id"] . '" >' . $events["eventName"] . '</a>
                     </div>';
                     $std_num++;
                 }
