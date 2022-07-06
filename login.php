@@ -1,7 +1,7 @@
 <?php
 session_start();
-if (isset($_SESSION['admin_user'])) {
-	header("Location: /home.php");
+if (isset($_SESSION['login_user'])) {
+	header("Location: /dashboard.php");
 } else {
 	if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		include("dbconnect.php");
