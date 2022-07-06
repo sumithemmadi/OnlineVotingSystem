@@ -228,16 +228,16 @@ if (empty($_GET['event_id'])) {
             </div>
           </div>
           <div class="form-group">
-            <input type="radio" name="vote_value" value="<?php echo $events['partyName1'] ?>">
+            <input type="radio" name="vote_value" value="<?php echo $events['partyName1'] ?>" require>
             <label class="partytext" for="<?php echo $events['partyName1'] ?>"><?php echo $events['partyName1'] ?></label>
             <br>
-            <input type="radio" name="vote_value" value="<?php echo $events['partyName2'] ?>">
+            <input type="radio" name="vote_value" value="<?php echo $events['partyName2'] ?>" require>
             <label class="partytext" for="<?php echo $events['partyName2'] ?>"><?php echo $events['partyName2'] ?></label>
             <br>
-            <input type="radio" name="vote_value" value="<?php echo $events['partyName3'] ?>">
+            <input type="radio" name="vote_value" value="<?php echo $events['partyName3'] ?>" require>
             <label class="partytext" for="<?php echo $events['partyName3'] ?>"><?php echo $events['partyName3'] ?></label>
             <br>
-            <input type="radio" name="vote_value" value="<?php echo $events['partyName4'] ?>">
+            <input type="radio" name="vote_value" value="<?php echo $events['partyName4'] ?>" require>
             <label class="partytext" for="<?php echo $events['partyName4'] ?>"><?php echo $events['partyName4'] ?></label>
             <br>
           </div>

@@ -6,7 +6,7 @@ session_start();
 if (empty($_SESSION['login_user'])) {
     header("location: access-denied.php");
 }
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['vote_value'])) {
     include("dbconnect.php");
     $username = $_SESSION['login_user'];
     $event_id = $_POST['event_id'];
@@ -22,5 +22,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         mysqli_close($conn);
         echo "<h3 style='color:green'>Congrates You have submitted your vote for " . $voteParty . "</h3>";
     }
+} else {
+    echo "<h3 style='color:green'>please select a party</h3>";
+
 }
 ?>
