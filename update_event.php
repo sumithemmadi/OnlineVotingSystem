@@ -19,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     print_r( $eventName );
 
     echo $partyName1;
-    mysqli_query($conn, "UPDATE  `events` SET eventName = '$eventName' , partyName1 = '$partyName1', partyName2 = '$partyName2', partyName3 = '$partyName3', partyName4 = '$partyName4' WHERE  event_id ='$event_id'");
+    mysqli_query($conn, "UPDATE  `events` SET admin_id = '$username' , eventName = '$eventName' , partyName1 = '$partyName1', partyName2 = '$partyName2', partyName3 = '$partyName3', partyName4 = '$partyName4' WHERE  event_id ='$event_id'");
     mysqli_close($conn);
     header("Location: admin_votes.php?event_id=" . $event_id);
 }

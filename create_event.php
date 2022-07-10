@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $partyName2 = $_POST['partyName2'];
     $partyName3 = $_POST['partyName3'];
     $partyName4 = $_POST['partyName4'];
-    mysqli_query($conn, "INSERT INTO `events` (`eventName`, `partyName1`, `partyName2`, `partyName3`, `partyName4` ) VALUES ( '$eventName' , '$partyName1', '$partyName2', '$partyName3', '$partyName4' )");
+    mysqli_query($conn, "INSERT INTO `events` (`admin_id`, `eventName`, `partyName1`, `partyName2`, `partyName3`, `partyName4` ) VALUES ( '$username' , $eventName' , '$partyName1', '$partyName2', '$partyName3', '$partyName4' )");
     mysqli_close($conn);
     header("Location: admin_events.php");
 }
