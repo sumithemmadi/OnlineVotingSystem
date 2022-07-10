@@ -8,7 +8,7 @@ if (isset($_SESSION['admin_user'])) {
 		$username = $_POST['username'];
 		$password = $_POST['password'];
 
-		$sql = "SELECT `password` FROM admindb WHERE username = '$username'";
+		$sql = "SELECT * FROM admindb WHERE username = '$username'";
 
 		$result = mysqli_query($conn, $sql);
 		$row = mysqli_fetch_array($result, MYSQLI_ASSOC);

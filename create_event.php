@@ -7,7 +7,7 @@ if (empty($_SESSION['admin_user'])) {
     header("location: access-denied.php");
     exit();
 }
-if ($_SERVER["REQUEST_METHOD"] == "POST"  && !empty($_SESSION['admin_id'])) {
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
     include("dbconnect.php");
     $username = $_SESSION['admin_user'];
     $admin_id = $_SESSION['admin_id'];
