@@ -16,6 +16,7 @@ if (isset($_SESSION['admin_user'])) {
 
 		if (password_verify($password, $row['password'])) {
 			$_SESSION['admin_user'] = $username;
+			$_SESSION['admin_id'] = $row['admin_id'];
 			header("location: home.php");
 		} else {
 			header("Location: admin.php?msg=* Invalid username or password.");
