@@ -339,18 +339,8 @@ if (empty($_GET['event_id'])) {
           <?php
 
           $std_num = 0;
+          $t_party_name1 = $t_party_name2 = $t_party_name3 = $t_party_name4 = 0;
           while ($candidates = mysqli_fetch_array($result1, MYSQLI_ASSOC)) {
-            // $t_party_name1 = $t_party_name2 = $t_party_name3 = $t_party_name4 = 0;
-            // if( $candidates['voteParty'] == $events['partyName1']) {
-            //   ++$t_party_name1;
-            // } elseif($candidates['voteParty'] == $events['partyName2']) {
-            //   ++$t_party_name2;
-            // } elseif($candidates['voteParty'] == $events['partyName3']) {
-            //   ++$t_party_name3;
-            // }
-            // else($candidates['voteParty'] == $events['partyName4']) {
-            //   ++$t_party_name4;
-            // }
             echo '
                     <tr>
                         <td></td>
@@ -367,7 +357,40 @@ if (empty($_GET['event_id'])) {
           </table>
       </div>
     <?php
+      $n1 = $events['partyName1'];
+      $sql2 = "SELECT * FROM vote WHERE event_id='$event_id' AND username='$username' AND votePArty = '$n1'";
+      $result2 = mysqli_query($conn, $sql2);
+      $count2 = mysqli_num_rows($result2);
 
+      $n2 = $events['partyName2'];
+      $sql3 = "SELECT * FROM vote WHERE event_id='$event_id' AND username='$username' AND votePArty = '$n2'";
+      $result3 = mysqli_query($conn, $sql3);
+      $count3 = mysqli_num_rows($result3);
+
+      $n3 = $events['partyName3'];
+      $sql4 = "SELECT * FROM vote WHERE event_id='$event_id' AND username='$username' AND votePArty = '$n3'";
+      $result4 = mysqli_query($conn, $sql4);
+      $count4 = mysqli_num_rows($result4);
+
+      $n4 = $events['partyName4'];
+      $sql5 = "SELECT * FROM vote WHERE event_id='$event_id' AND username='$username' AND votePArty = '$n4'";
+      $result5 = mysqli_query($conn, $sql5);
+      $count5 = mysqli_num_rows($result5);
+
+      if ($count2 == 0 && $count3 == 0 && $count4 == 0 && $count5 == 0) {
+        echo '<span>Winner will be announced after voting</span>';
+      } else {
+        if ($count2 > $count3 && $count2 > $count4 && $count2 > $count5) {
+          $win = [$n1, $count2];
+        } elseif ($count3 > $count2 && $count3 > $count4 && $count3 > $count5) {
+          $win = [$n2, $count3];
+        } elseif ($count4 > $count2 && $count4 > $count3 && $count4 > $count5) {
+          $win = [$n3, $count4];
+        } else {
+          $win = [$n4, $count5];
+        }
+        echo '<span>Winner is ' . $win[0] . ' with ' . $win[1] . ' votes</span>';
+      }
     }
     ?>
 
